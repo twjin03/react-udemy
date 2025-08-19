@@ -12,6 +12,7 @@ export default function Player({ initialName, symbol }) {
     setPlayerName(e.target.value); 
   }
 
+  // 플레이어 이름 표시 <-> 입력창 토글을 위한 변수 
   let editablePlayerName = <span className="player-name">{playerName}</span>
 
   if (isEditing) {
@@ -21,7 +22,7 @@ export default function Player({ initialName, symbol }) {
   return (
     <li>
       <span className="player">
-        {editablePlayerName}
+        {editablePlayerName} 
         <span className="player-symbol">{symbol}</span>
       </span>
       <button onClick={handleEditClick}>{isEditing ? "Save" : "Edit"}</button>
