@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Places from './Places.jsx';
 import Error from './Error.jsx';
 import { sortPlacesByDistance } from '../loc.js';
-
+import { fetchAvailablePlaces } from '../http.js';
 
 export default function AvailablePlaces({ onSelectPlace }) {
   const [availablePlaces, setAvailablePlaces] = useState([]);
@@ -13,15 +13,11 @@ export default function AvailablePlaces({ onSelectPlace }) {
     async function fetchPlaces() {
       setIsFetching(true);
       try {
-        const response = await fetch('http://localhost:3000/places');
-        const resData = await response.json();
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch places');
-        }
+        const places = await fetchAvailablePlaces(); // 여기서는 아직 await상태 (fetchAvailablePlaces가 프로미스를 반환하기 때문)
 
         navigator.geolocation.getCurrentPosition((position) => {
-          const sortedPlaces = sortPlacesByDistance(resData.places, position.coords.latitude, position.coords.longitude);
+          const sortedPlaces = sortPlacesByDistance(
+            places, position.coords.latitude, position.coords.longitude,);
           setAvailablePlaces(sortedPlaces); // 여기서 데이터 저장
           setIsFetching(false); // 콜백 함수 안으로 넣어주기 
         }); // 콜백 패턴 사용 

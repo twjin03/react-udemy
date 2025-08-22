@@ -5,6 +5,7 @@ import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
+import { updateUserPlaces } from './http.js';
 
 function App() {
   const selectedPlace = useRef();
@@ -22,8 +23,9 @@ function App() {
     setModalIsOpen(false);
   }
 
-  function handleSelectPlace(selectedPlace) {
-    setUserPlaces((prevPickedPlaces) => {
+  async function handleSelectPlace(selectedPlace) {
+
+    setUserPlaces((prevPickedPlaces) => { // state 업데이트 말고 백엔드로 바로 보내기 
       if (!prevPickedPlaces) {
         prevPickedPlaces = [];
       }
@@ -32,6 +34,13 @@ function App() {
       }
       return [selectedPlace, ...prevPickedPlaces];
     });
+
+    try{
+      // updateUserPlaces(userPlaces);  // 상태 업데이트가 즉각적으로 이 코드에서 이뤄지지 않음 (스케줄링만 함) 
+    await updateUserPlaces([selectedPlace, ...userPlaces]); // 새 배열에 추출하기 
+    } catch (error) {}
+
+
   }
 
   const handleRemovePlace = useCallback(async function handleRemovePlace() {
