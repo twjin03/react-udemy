@@ -1,22 +1,40 @@
 import { useEffect, useState } from 'react';
 import Places from './Places.jsx';
+import Error from './Error.jsx';
 
 
 export default function AvailablePlaces({ onSelectPlace }) {
   const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [isFetching, setIsFetching] = useState(false); 
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState();
 
   useEffect(() => {
-    setIsFetching(true);
     async function fetchPlaces() {
-      const response = await fetch('http://localhost:3000/places'); 
-      const resData = await response.json(); 
-      setAvailablePlaces(resData.places);
+      setIsFetching(true);
+      try {
+        const response = await fetch('http://localhost:3000/places');
+        const resData = await response.json();
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch places');
+        }
+
+        setAvailablePlaces(resData.places); // 여기서 데이터 저장
+      } catch (error) {
+        setError({ message:
+            error.message || 'Could not fetch places, please try again later.'},
+        ); // 에러 저장
+      }
       setIsFetching(false);
     }
-    fetchPlaces(); 
-  }, []); // 의존성 바뀌었다는 전제 하에 실행됨 
-  // 빈칸이면 딱 한번 실행됨 -> 무한 루프 빠지지 않음 
+
+    fetchPlaces();
+  }, []);
+
+
+  if (error) {
+    return <Error title="An error occurred!" message={error.message} />
+  }
   return (
     <Places
       title="Available Places"
