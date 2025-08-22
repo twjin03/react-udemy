@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Places from './Places.jsx';
 import Error from './Error.jsx';
+import { sortPlacesByDistance } from '../loc.js';
 
 
 export default function AvailablePlaces({ onSelectPlace }) {
@@ -19,13 +20,20 @@ export default function AvailablePlaces({ onSelectPlace }) {
           throw new Error('Failed to fetch places');
         }
 
-        setAvailablePlaces(resData.places); // 여기서 데이터 저장
+        navigator.geolocation.getCurrentPosition((position) => {
+          const sortedPlaces = sortPlacesByDistance(resData.places, position.coords.latitude, position.coords.longitude);
+          setAvailablePlaces(sortedPlaces); // 여기서 데이터 저장
+          setIsFetching(false); // 콜백 함수 안으로 넣어주기 
+        }); // 콜백 패턴 사용 
       } catch (error) {
-        setError({ message:
-            error.message || 'Could not fetch places, please try again later.'},
+        setError({
+          message:
+            error.message || 'Could not fetch places, please try again later.'
+        },
         ); // 에러 저장
+        setIsFetching(false);
       }
-      setIsFetching(false);
+
     }
 
     fetchPlaces();
