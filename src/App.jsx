@@ -53,8 +53,15 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
     );
 
+    try {
+      await updateUserPlaces(userPlaces.filter(place => place.id !== selectedPlace.current.id));
+    } catch (error) {
+      setUserPlaces(userPlaces);
+      setErrorUpdatingPlaces({message: error.message || 'Failed to delete place.',});
+    }
+
     setModalIsOpen(false);
-  }, []);
+  }, [userPlaces]); // userPlaces 상태가 바뀌면 이 함수가 꼭 재생성되도록 해야 함 
   function handleError() {
     setErrorUpdatingPlaces(null); // 에러 메시지 출력한 후 에러 없애기 위함 
   }
