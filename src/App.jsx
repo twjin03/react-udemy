@@ -3,6 +3,7 @@ import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winning-combinations";
+import GameOver from "./components/GameOver";
 
 const initialGameBoard = [
   [null, null, null],
@@ -24,13 +25,13 @@ function App() {
   // const [hasWinner, setHasWinner] = useState(false);
 
   const activePlayer = deriveActivePlayer(gameTurns);
-  let gameBoard = initialGameBoard;
+  let gameBoard = [...initialGameBoard.map(array => [...array])]; // deep copy여야 함 
 
   for (const turn of gameTurns) {
     const { square, player } = turn;
     const { row, col } = square;
 
-    gameBoard[row][col] = player;
+    gameBoard[row][col] = player; 
   }
 
   let winner;
@@ -46,6 +47,7 @@ function App() {
       winner = firstSquareSymbol;
     }
   }
+  const hasDraw = gameTurns.length === 9 && !winner;
 
   function handleSelectSquare(rowIndex, colIndex) {
     setGameTurns(prevTurns => {
@@ -57,6 +59,10 @@ function App() {
     });
   }
 
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
   return (
     <main>
       <div id="game-container">
@@ -64,7 +70,10 @@ function App() {
           <Player initialName="player 1" symbol="X" isActive={activePlayer === 'X'} />
           <Player initialName="player 2" symbol="O" isActive={activePlayer === 'O'} />
         </ol>
-        {winner && <p>You won, {winner}!</p>}
+        {(winner || hasDraw) && <GameOver 
+        winner={winner}
+        onRestart={handleRestart}
+        />}
         <GameBoard
           onSelectSquare={handleSelectSquare}
           board={gameBoard} />
