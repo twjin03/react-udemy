@@ -15,14 +15,14 @@ function App() {
     setUserInput(prevUserInput => {
       return {
         ...prevUserInput,
-        [inputIdentifier]: newValue
+        [inputIdentifier]: +newValue, // 문자열을 숫자 값으로 변환
       }
     });
   }
   return (
     <>
       <Header />
-      <UserInput userInput={userInput} onChang={handleChange} />
+      <UserInput userInput={userInput} onChange={handleChange} />
       <Results input={userInput}/>
     </>
   )
