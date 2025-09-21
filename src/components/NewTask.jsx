@@ -1,15 +1,14 @@
 import { useState } from "react";
 
 export default function NewTask({ onAdd }) {
-  const [enteredTask, setEnteredTask] = useState();
+  const [enteredTask, setEnteredTask] = useState("");
 
   function handleChange(e) {
     setEnteredTask(e.target.value);
   }
 
   function handleClick() {
-    // 입력된 값을 app 컴포넌트로 보내기 
-    // 입력란을 빈 칸으로 리셋 
+    if (enteredTask.trim() === "") return;
     onAdd(enteredTask);
     setEnteredTask("");
   }
