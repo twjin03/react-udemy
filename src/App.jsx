@@ -4,76 +4,72 @@ import { NoProjectSelected } from "./components/NoProjectSelected";
 import ProjectSidebar from "./components/ProjectSidebar";
 import SelectedProject from "./components/SelectedProject";
 
-function App() {
+export default function App() {
   const [projectsState, setProjectsState] = useState({
-    selectedProjectId: undefined,
-    projects: []
+    selectedProjectId: undefined, // undefined: 아무것도 선택 안 함 / null: 추가 폼 열림 / string: 선택됨
+    projects: [],
   });
 
   function handleSelectProject(id) {
-    setProjectsState(prevState => {
-      return {
-        ...prevState,
-        selectedProjectId: id,
-      };
-    });
+    setProjectsState(prev => ({ ...prev, selectedProjectId: id }));
   }
 
   function handleStartAddProject() {
-    setProjectsState(prevState => {
+    setProjectsState(prev => ({ ...prev, selectedProjectId: null }));
+  }
+
+  function handleCancelAddProject() {
+    setProjectsState(prev => ({ ...prev, selectedProjectId: undefined }));
+  }
+
+  function handleAddProject(projectData) {
+    setProjectsState(prev => {
+      const newProject = {
+        id: crypto.randomUUID(), // 고유/안정 id
+        ...projectData,
+      };
       return {
-        ...prevState,
-        selectedProjectId: null,
+        ...prev,
+        selectedProjectId: undefined,            
+        projects: [...prev.projects, newProject] 
       };
     });
   }
 
-  function handleCancelAddProject() {
-    setProjectsState((prevState) => {
-      return {
-        ...prevState,
-        selectedProjectId: undefined,
-      };
-    })
+  function handleDeleteProject() {
+    setProjectsState(prev => ({
+      ...prev,
+      selectedProjectId: undefined,
+      projects: prev.projects.filter(p => p.id !== prev.selectedProjectId),
+    }));
   }
 
-  function handleAddProject(projecteData) {
-    setProjectsState(prevState => {
-      const projectId = Math.random();
-      const newProject = {
-        ...projecteData,
-        id: projectId,
-      };
-      return {
-        ...prevState,
-        selectedProjectId: undefined,
-        projects: [...[prevState.projects, newProject]]
-      };
-    })
-  }
-  const selectedProject = projectsState.projects.find(project => project.id === projectsState.selectedProjectId)
+  const selectedProject = projectsState.projects.find(
+    p => p.id === projectsState.selectedProjectId
+  );
 
-  let content = <SelectedProject project={selectedProject} />;
+  let content = <SelectedProject project={selectedProject} onDelete={handleDeleteProject} />;
 
   if (projectsState.selectedProjectId === null) {
-    content = <NewProject
-      onAdd={handleAddProject}
-      onCancel={handleCancelAddProject} />
+    content = (
+      <NewProject
+        onAdd={handleAddProject}
+        onCancel={handleCancelAddProject}
+      />
+    );
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
   }
 
   return (
-    <>
-      <main className="h-screen my-8 flex gap-8">
-        <ProjectSidebar
-          onStartAddProject={handleStartAddProject}
-          projects={projectsState.projects}
-          onSelectProject={handleSelectProject} />
-        {content}
-      </main>
-    </>
+    <main className="h-screen my-8 flex gap-8">
+      <ProjectSidebar
+        onStartAddProject={handleStartAddProject}
+        projects={projectsState.projects}
+        onSelectProject={handleSelectProject}
+        selectedProjectId={projectsState.selectedProjectId} // 전달
+      />
+      {content}
+    </main>
   );
 }
-
-export default App;
