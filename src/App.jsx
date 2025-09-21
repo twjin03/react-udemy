@@ -6,9 +6,29 @@ import SelectedProject from "./components/SelectedProject";
 
 export default function App() {
   const [projectsState, setProjectsState] = useState({
-    selectedProjectId: undefined, // undefined: 아무것도 선택 안 함 / null: 추가 폼 열림 / string: 선택됨
+    selectedProjectId: undefined,
     projects: [],
+    tasks: []
   });
+
+  function handleAddTask(text) {
+    setProjectsState(prev => {
+      const newTask = {
+        id: crypto.randomUUID(),
+        text: text,
+        projectId: prev.selectedProjectId,
+      };
+      return {
+        ...prev,
+        selectedProjectId: prev.selectedProjectId,
+        tasks: [newTask, ...prev.tasks]
+      };
+    });
+  }
+
+  function handleDeleteTask() {
+
+  }
 
   function handleSelectProject(id) {
     setProjectsState(prev => ({ ...prev, selectedProjectId: id }));
@@ -25,13 +45,13 @@ export default function App() {
   function handleAddProject(projectData) {
     setProjectsState(prev => {
       const newProject = {
-        id: crypto.randomUUID(), // 고유/안정 id
+        id: crypto.randomUUID(),
         ...projectData,
       };
       return {
         ...prev,
-        selectedProjectId: undefined,            
-        projects: [...prev.projects, newProject] 
+        selectedProjectId: undefined,
+        projects: [...prev.projects, newProject]
       };
     });
   }
@@ -48,7 +68,14 @@ export default function App() {
     p => p.id === projectsState.selectedProjectId
   );
 
-  let content = <SelectedProject project={selectedProject} onDelete={handleDeleteProject} />;
+  let content = 
+  <SelectedProject 
+  project={selectedProject} 
+  onDelete={handleDeleteProject} 
+  onAddTask={handleAddTask}
+  onDeleteTask={handleDeleteTask}
+  tasks={projectsState.tasks}
+  />;
 
   if (projectsState.selectedProjectId === null) {
     content = (
