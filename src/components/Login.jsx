@@ -10,6 +10,7 @@ export default function Login() {
     const enteredEmail = email.current .value; 
     const enteredPassword = password.current .value; 
     console.log(enteredEmail, enteredPassword);
+    // email.current.value = ''; -> 추천되지 않음 ! 
   }
 
   return (
