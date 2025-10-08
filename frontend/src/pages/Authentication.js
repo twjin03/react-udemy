@@ -42,8 +42,9 @@ export async function action({ request }) {
   const token = resData.token;
 
   localStorage.setItem('token', token);
-  const expiration = new Date();
-  expiration.setHours()
+  const expiration = new Date(); // 토큰 유효 시간 저장
+  expiration.setHours(expiration.getHours() + 1); // 미래 토큰 만료 시간 생성
+  localStorage.setItem('expiration', expiration.toISOString());
 
   return redirect('/');
 }
