@@ -9,9 +9,10 @@ export default function FindEventSection() {
   const searchElement = useRef();
   const [searchTerm, setSearchTerm] = useState();
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['events', { search: searchTerm }],
-    queryFn: ({ signal }) => fetchEvents({ signal, searchTerm })
+    queryFn: ({ signal }) => fetchEvents({ signal, searchTerm }),
+    enabled: searchTerm != undefined,
   });
 
   function handleSubmit(event) {
@@ -21,7 +22,7 @@ export default function FindEventSection() {
 
   let content = <p>Events 검색을 위해 검색어를 입력하세요.</p>;
 
-  if (isPending) {
+  if (isLoading) {
     content = <LoadingIndicator />
   }
 

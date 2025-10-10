@@ -2,7 +2,7 @@ export async function fetchEvents({ signal, searchTerm }) {
   console.log(searchTerm);
   let url = 'http://localhost:3333/events';
   if (searchTerm) {
-    url += '?=search' + searchTerm
+    url += '?search=' + searchTerm
   }
 
   const response = await fetch(url, { signal: signal });
