@@ -4,8 +4,11 @@ import Header from '../Header.jsx';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { deleteEvent, fetchEvent, queryClient } from '../../utils/http.js';
 import ErrorBlock from '../UI/ErrorBlock.jsx';
+import { useState } from 'react';
+import Modal from '../UI/Modal.jsx';
 
 export default function EventDetails() {
+  const [isDeleting, setIsDeleting] = useState();
   const params = useParams();
   const navigate = useNavigate();
   const { data, isPending, isError, error } = useQuery({
@@ -13,7 +16,12 @@ export default function EventDetails() {
     queryFn: ({ signal }) => fetchEvent({ signal, id: params.id }),
   });
 
-  const { mutate } = useMutation({
+  const {
+    mutate,
+    isPending: isPendingDeletion,
+    isError: isErrorDeleting,
+    error: deleteError
+  } = useMutation({
     mutationFn: deleteEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -23,6 +31,13 @@ export default function EventDetails() {
       navigate('/events');
     }
   });
+
+  function handleStartDelete() {
+    setIsDeleting(true);
+  }
+  function handleStopDelete() {
+    setIsDeleting(false);
+  }
 
   function handleDelete() {
     mutate({ id: params.id });
@@ -54,7 +69,7 @@ export default function EventDetails() {
         <header>
           <h1>{data.title}</h1>
           <nav>
-            <button onClick={handleDelete}>Delete</button>
+            <button onClick={handleStartDelete}>Delete</button>
             <Link to="edit">Edit</Link>
           </nav>
         </header>
@@ -74,6 +89,20 @@ export default function EventDetails() {
 
   return (
     <>
+      {isDeleting && <Modal onClose={handleStopDelete}>
+        <h2>정말 삭제하시겠습니까?</h2>
+        <p>이벤트를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+        <div className='form-actions'>
+          {isPendingDeletion && <p>삭제 중... 잠시만 기다려주세요.</p>}
+          {!isPendingDeletion &&
+            <>
+              <button onClick={handleStopDelete} className='button-text'>취소</button>
+              <button onClick={handleDelete} className='button'>삭제</button>
+            </>
+          }
+        </div>
+        {isErrorDeleting && <ErrorBlock title="이벤트 삭제 실패" message={deleteError.info?.message || '삭제에 실패했습니다. 나중에 다시 시도해주세요.'} />}
+      </Modal>}
       <Outlet />
       <Header>
         <Link to="/events" className="nav-item">
