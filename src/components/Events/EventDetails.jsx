@@ -80,7 +80,7 @@ export default function EventDetails() {
               <p id="event-details-location">{data.location}</p>
               <time dateTime={`Todo-DateT$Todo-Time`}>{formattedDate} @ {data.time}</time>
             </div>
-            <p id="event-details-description">{data.discription}</p>
+            <p id="event-details-description">{data.description}</p>
           </div>
         </div>
       </>
