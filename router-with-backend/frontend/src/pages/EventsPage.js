@@ -18,7 +18,7 @@ export default function EventsPage() {
 
 
 export async function loader() {
-  const response = await fetch('http://localhost:8080/events/dfs');
+  const response = await fetch('http://localhost:8080/events');
 
   if (!response.ok) {
     // return { isError: true, message: 'Could not fetch events.' };
