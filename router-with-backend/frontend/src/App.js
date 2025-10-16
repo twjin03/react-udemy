@@ -31,7 +31,7 @@ import RootLayout from './pages/Root';
 const router = createBrowserRouter([
   {
     path: '/', element: <RootLayout />, children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <HomePage /> }, // 기본 페이지 index: true로 설정
       { path: '/events', element: <EventsPage /> },
       { path: '/events/:eventId', element: <EventDetailPage /> },
       { path: '/events/new', element: <NewEventPage /> },
