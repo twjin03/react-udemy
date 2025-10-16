@@ -5,6 +5,10 @@ export default function EventsPage() {
   const data = useLoaderData();
   const events = data.events;
 
+  // if (data.isError) {
+  //   return <p>{data.message}</p>;
+  // }
+
   return (
     <>
       {<EventsList events={events} />}
@@ -14,10 +18,12 @@ export default function EventsPage() {
 
 
 export async function loader() {
-  const response = await fetch('http://localhost:8080/events');
+  const response = await fetch('http://localhost:8080/events/dfs');
 
   if (!response.ok) {
-    // ...
+    // return { isError: true, message: 'Could not fetch events.' };
+    throw new Response(JSON.stringify({ message: 'Could not fecth events.' }),
+      { status: 500 });
   } else {
     return response;
     // react router가 자동으로 데이터를 추출하기 때문에 따로 추가 작업할 필요 없이 바로 반환하는 게 가능함

@@ -28,10 +28,11 @@ import NewEventPage from './pages/NewEventPage';
 import EditEventPage from './pages/EditEventPage';
 import RootLayout from './pages/Root';
 import EventsRootLayout from './pages/EventsRoot';
+import ErrorPage from './pages/ErrorPage';
 
 const router = createBrowserRouter([
   {
-    path: '/', element: <RootLayout />,
+    path: '/', element: <RootLayout />, errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> }, // 기본 페이지 index: true로 설정
       {
