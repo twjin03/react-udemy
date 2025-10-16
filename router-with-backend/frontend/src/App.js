@@ -27,15 +27,21 @@ import EventDetailPage from './pages/EventDetailPage';
 import NewEventPage from './pages/NewEventPage';
 import EditEventPage from './pages/EditEventPage';
 import RootLayout from './pages/Root';
+import EventsRootLayout from './pages/EventsRoot';
 
 const router = createBrowserRouter([
   {
-    path: '/', element: <RootLayout />, children: [
+    path: '/', element: <RootLayout />,
+    children: [
       { index: true, element: <HomePage /> }, // 기본 페이지 index: true로 설정
-      { path: '/events', element: <EventsPage /> },
-      { path: '/events/:eventId', element: <EventDetailPage /> },
-      { path: '/events/new', element: <NewEventPage /> },
-      { path: '/:eventId/edit', element: <EditEventPage /> },
+      {
+        path: 'events', element: <EventsRootLayout />, children: [
+          { index: true, element: <EventsPage /> },
+          { path: ':eventId', element: <EventDetailPage /> },
+          { path: 'new', element: <NewEventPage /> },
+          { path: ':eventId/edit', element: <EditEventPage /> },
+        ]
+      }
     ]
   },
 
