@@ -42,11 +42,18 @@ const router = createBrowserRouter([
             loader: eventsLoader,
           },
           {
-            path: ':eventId', element: <EventDetailPage />,
+            path: ':eventId',
+            id: 'event-detail',
+            // shared layout 없기 때문에 여기는 별도의 element 없음
             loader: eventDetailLoader,
+            children: [
+              {
+                index: true, element: <EventDetailPage />,
+              },
+              { path: 'edit', element: <EditEventPage /> }
+            ]
           },
           { path: 'new', element: <NewEventPage /> },
-          { path: ':eventId/edit', element: <EditEventPage /> },
         ]
       }
     ]
