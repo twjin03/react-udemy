@@ -4,10 +4,10 @@ import { counterActions } from '../store';
 
 const Counter = () => {
   const dispatch = useDispatch();
-  const counter = useSelector(state => state.counter); // 이때 자동으로 이 컴포넌트는 저장소를 구독
+  const counter = useSelector(state => state.counter.counter); // 이때 자동으로 이 컴포넌트는 저장소를 구독
   // 컴포넌트 제거하면 자동으로 구독 삭제
 
-  const show = useSelector(state => state.showCounter);
+  const show = useSelector(state => state.counter.showCounter);
 
   const incrementHandler = () => {
     dispatch(counterActions.increment());
