@@ -3,6 +3,8 @@ import { createStore } from 'redux';
 const initialState = { counter: 0, showCounter: true }
 
 const counterReducer = (state = initialState, action) => {
+  // state 업데이트 할 때는 항상 다른 state도 모두 설정해야 함
+  // 기존의 state는 절대 변경해서는 안되며, 항상 state를 덮어쓰는 방식으로 state를 업데이트해야 함
   if (action.type === 'increment') {
     return {
       counter: state.counter + 1,
