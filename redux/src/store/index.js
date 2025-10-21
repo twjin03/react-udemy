@@ -1,38 +1,32 @@
-import { createStore } from 'redux';
+import { createSlice, configureStore } from '@reduxjs/toolkit';
 
-const initialState = { counter: 0, showCounter: true }
+const initialState = { counter: 0, showCounter: true };
 
-const counterReducer = (state = initialState, action) => {
-  // state 업데이트 할 때는 항상 다른 state도 모두 설정해야 함
-  // 기존의 state는 절대 변경해서는 안되며, 항상 state를 덮어쓰는 방식으로 state를 업데이트해야 함
-  if (action.type === 'increment') {
-    return {
-      counter: state.counter + 1,
-      showCounter: state.showCounter
-    };
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment(state) {
+      // 여기서는 state를 mutate하는 것이 가능... 그렇게 보이는 것 뿐임
+      // redux toolkit이 실제로 바뀌는 것 막아줌 알아서 override함  
+      state.counter++;
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter = state.counter + action.payload;
+    },
+    toggleCounter(state) {
+      state.showCounter = !state.showCounter;
+    },
   }
-  if (action.type === 'increase') {
-    return {
-      counter: state.counter + action.amount,
-      showCounter: state.showCounter,
-    };
-  }
-  if (action.type === 'decrement') {
-    return {
-      counter: state.counter - 1,
-      showCounter: state.showCounter
-    };
-  }
+});
 
-  if (action.type === 'toggle') {
-    return {
-      showCounter: !state.showCounter,
-      counter: state.counter,
-    }
-  }
-  return state;
-};
+const store = configureStore({
+  reducer: counterSlice.reducer
+});
 
-const store = createStore(counterReducer);
+export const counterActions = counterSlice.actions;
 
 export default store;
